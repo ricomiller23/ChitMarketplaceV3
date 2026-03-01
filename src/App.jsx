@@ -31,6 +31,14 @@ function makeToast(type, title, message, receipt, duration = 4000) {
 }
 
 export default function App() {
+  // ── Mobile gate (JS-level) ────────────────────────
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 1024);
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 1024);
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
   // ── Data ──────────────────────────────────────────
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -191,11 +199,14 @@ export default function App() {
         d.treasury.chits += amount;
         txn.from = "Trading Vault"; txn.to = "Alpha Fund";
         break;
-      case "XFER":
+      case "XFER": {
         d.user.tradingBal -= amount;
-        txn.from = data.user.name; txn.to = modalRecipient;
+        const recipientMember = d.customers?.find(m => m.id === modalRecipient);
+        txn.from = data.user.name;
+        txn.to = recipientMember ? `${recipientMember.name} (${recipientMember.id})` : modalRecipient;
         txn.status = "Pending";
         break;
+      }
       case "CASH_PICKUP":
         d.user.tradingBal += amount;
         d.treasury.chits -= amount;
@@ -263,6 +274,9 @@ export default function App() {
       setConsoleInput("");
     }
   }, [consoleInput]);
+
+  // ── Mobile gate ─────────────────────────
+  if (isMobile) return <MobileBlocker />;
 
   // ── Loading ───────────────────────────────────────
   if (loading) {

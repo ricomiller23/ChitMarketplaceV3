@@ -140,22 +140,65 @@ export default function Modal({
                                 </div>
                             )}
 
-                            {/* Recipient — XFER */}
+                            {/* Recipient — XFER member picker */}
                             {modal === "XFER" && (
                                 <div>
                                     <label style={{ fontSize: 11, color: "var(--text-3)", textTransform: "uppercase", letterSpacing: "0.1em", display: "block", marginBottom: 8 }}>
-                                        Recipient ID / Address
+                                        Select Recipient Member
                                     </label>
-                                    <input
-                                        type="text" value={modalRecipient}
-                                        onChange={e => setModalRecipient(e.target.value)}
-                                        placeholder="usr-XXXX or member string"
-                                        style={{
-                                            width: "100%", background: "var(--bg-base)", border: "1px solid var(--border)",
-                                            borderRadius: 10, padding: "12px 16px", color: "var(--text-1)",
-                                            fontFamily: "var(--font-mono)", fontSize: 13, outline: "none",
-                                        }}
-                                    />
+                                    <div style={{
+                                        maxHeight: 200, overflowY: "auto",
+                                        border: "1px solid var(--border)", borderRadius: 10, overflow: "hidden",
+                                    }}>
+                                        {(data.customers || []).map((m, i) => {
+                                            const selected = modalRecipient === m.id;
+                                            return (
+                                                <button
+                                                    key={m.id}
+                                                    onClick={() => setModalRecipient(m.id)}
+                                                    style={{
+                                                        width: "100%", display: "flex", alignItems: "center",
+                                                        justifyContent: "space-between", padding: "11px 14px",
+                                                        background: selected ? "var(--accent-dim)" : i % 2 === 0 ? "var(--bg-base)" : "var(--bg-hover)",
+                                                        border: "none",
+                                                        borderBottom: i < (data.customers.length - 1) ? "1px solid var(--border)" : "none",
+                                                        borderLeft: selected ? "3px solid var(--accent)" : "3px solid transparent",
+                                                        cursor: "pointer", textAlign: "left",
+                                                        transition: "background 0.1s",
+                                                    }}
+                                                >
+                                                    <div>
+                                                        <p style={{ fontSize: 13, fontWeight: selected ? 700 : 500, color: selected ? "var(--accent)" : "var(--text-1)" }}>
+                                                            {m.name}
+                                                        </p>
+                                                        <p style={{ fontSize: 10, color: "var(--text-3)", fontFamily: "var(--font-mono)", marginTop: 1 }}>
+                                                            {m.id} · {m.tier}
+                                                        </p>
+                                                    </div>
+                                                    <div style={{ textAlign: "right" }}>
+                                                        <p style={{ fontSize: 11, color: "var(--green)", fontFamily: "var(--font-mono)" }}>
+                                                            ⌀{m.tradingBal?.toLocaleString() ?? "—"}
+                                                        </p>
+                                                        <span style={{
+                                                            fontSize: 9, padding: "1px 5px", borderRadius: 100, fontWeight: 600,
+                                                            background: m.kycStatus === "Verified" ? "rgba(74,222,128,0.15)" : "rgba(251,191,36,0.15)",
+                                                            color: m.kycStatus === "Verified" ? "var(--green)" : "var(--amber)",
+                                                        }}>{m.kycStatus}</span>
+                                                    </div>
+                                                </button>
+                                            );
+                                        })}
+                                        {(!data.customers || data.customers.length === 0) && (
+                                            <p style={{ padding: "14px 16px", fontSize: 12, color: "var(--text-3)", textAlign: "center" }}>
+                                                No members available.
+                                            </p>
+                                        )}
+                                    </div>
+                                    {modalRecipient && (
+                                        <p style={{ fontSize: 11, color: "var(--accent)", marginTop: 6, fontFamily: "var(--font-mono)" }}>
+                                            ✓ Selected: {data.customers.find(m => m.id === modalRecipient)?.name ?? modalRecipient}
+                                        </p>
+                                    )}
                                 </div>
                             )}
 
