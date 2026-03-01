@@ -1,15 +1,20 @@
-// MobileBlocker.jsx — Hard block for mobile/tablet devices
+// MobileBlocker.jsx — Only shown via CSS on screens < 1024px (.mobile-blocker class)
 import { Monitor } from "lucide-react";
 
 export default function MobileBlocker() {
     return (
-        <div style={{
-            position: "fixed", inset: 0, zIndex: 9999,
-            background: "linear-gradient(135deg, #060b18 0%, #0d1326 100%)",
-            display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-            padding: 32, textAlign: "center",
-        }}>
-            {/* CHIT symbol */}
+        <div
+            className="mobile-blocker"
+            style={{
+                position: "fixed", inset: 0, zIndex: 9999,
+                background: "linear-gradient(135deg, #060b18 0%, #0d1326 100%)",
+                flexDirection: "column", alignItems: "center", justifyContent: "center",
+                padding: 32, textAlign: "center",
+                /* NOTE: display is controlled exclusively by the .mobile-blocker CSS class:
+                   default = display:none (desktop)
+                   @media max-width:1023px = display:flex (mobile/tablet) */
+            }}
+        >
             <div style={{
                 width: 72, height: 72, borderRadius: "50%",
                 background: "rgba(99,102,241,0.15)",
@@ -42,9 +47,7 @@ export default function MobileBlocker() {
                 This platform requires a <strong style={{ color: "#94a3b8" }}>desktop or laptop computer</strong> with a minimum screen width of 1024px. Please open UTRADE on a compatible device.
             </p>
 
-            <div style={{
-                display: "flex", flexDirection: "column", gap: 10, alignItems: "center",
-            }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10, alignItems: "center" }}>
                 <div style={{
                     background: "rgba(15,23,42,0.8)", border: "1px solid rgba(51,65,85,0.6)",
                     borderRadius: 10, padding: "12px 20px",
