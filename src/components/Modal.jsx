@@ -147,8 +147,8 @@ export default function Modal({
                                         Select Recipient Member
                                     </label>
                                     <div style={{
-                                        maxHeight: 200, overflowY: "auto",
-                                        border: "1px solid var(--border)", borderRadius: 10, overflow: "hidden",
+                                        maxHeight: 260, overflowY: "auto",
+                                        border: "1px solid var(--border)", borderRadius: 10,
                                     }}>
                                         {(data.customers || []).map((m, i) => {
                                             const selected = modalRecipient === m.id;
