@@ -1,15 +1,14 @@
-// Modal.jsx — V3 transaction modals (BUY/SELL/XFER/CASH_PICKUP/CASH_DROP/WIRE_OUT)
+// Modal.jsx — V3 transaction modals (BUY/SELL/XFER/CASH_PICKUP/WIRE_OUT)
 import { CheckCircle2, Loader2, X, AlertCircle } from "lucide-react";
 import { fmtUSD, fmtCHIT } from "../helpers.js";
 import { FACILITIES, BANK_ACCOUNTS } from "../constants.js";
 
 const MODAL_META = {
     BUY: { title: "Buy CHITs", sub: "Purchase CHITs from Treasury", accentBg: "var(--green)", accentTxt: "#000" },
-    SELL: { title: "Sell CHITs", sub: "Sell CHITs back to Treasury", accentBg: "var(--red)", accentTxt: "#000" },
+    SELL: { title: "Sell CHITs", sub: "Sell CHITs back to Treasury · Proceeds to Funding Account", accentBg: "var(--red)", accentTxt: "#000" },
     XFER: { title: "Transfer CHITs", sub: "Transfer CHITs to Member", accentBg: "var(--accent)", accentTxt: "#fff" },
     CASH_PICKUP: { title: "Cash Pick Up (CIT)", sub: "Schedule CIT Cash Collection", accentBg: "var(--green)", accentTxt: "#000" },
-    CASH_DROP: { title: "Cash Drop-Off (CIT)", sub: "Schedule CIT Cash Drop-Off", accentBg: "var(--red)", accentTxt: "#000" },
-    WIRE_OUT: { title: "Wire Money Out", sub: "Wire USD to Approved Bank Account", accentBg: "var(--blue)", accentTxt: "#000" },
+    WIRE_OUT: { title: "Send Proceeds to Bank", sub: "Wire CHIT Sale Proceeds to Approved Bank Account", accentBg: "var(--blue)", accentTxt: "#000" },
 };
 
 export default function Modal({
@@ -21,7 +20,7 @@ export default function Modal({
     if (!modal || !data) return null;
     const meta = MODAL_META[modal] || {};
     const usdTotal = data.user.alphaBal + data.user.betaBal;
-    const isUSD = ["BUY", "CASH_DROP", "WIRE_OUT"].includes(modal);
+    const isUSD = ["BUY", "WIRE_OUT"].includes(modal);
     const isCHIT = ["SELL", "XFER", "CASH_PICKUP"].includes(modal) && modal !== "CASH_PICKUP";
 
     return (
@@ -160,8 +159,8 @@ export default function Modal({
                                 </div>
                             )}
 
-                            {/* Facility — CASH_PICKUP / CASH_DROP */}
-                            {(modal === "CASH_PICKUP" || modal === "CASH_DROP") && (
+                            {/* Facility — CASH_PICKUP only */}
+                            {modal === "CASH_PICKUP" && (
                                 <div>
                                     <label style={{ fontSize: 11, color: "var(--text-3)", textTransform: "uppercase", letterSpacing: "0.1em", display: "block", marginBottom: 8 }}>
                                         Facility Location

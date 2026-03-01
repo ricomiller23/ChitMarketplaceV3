@@ -147,8 +147,8 @@ export default function App() {
     if (!data) return;
 
     const usdBal = data.user.alphaBal + data.user.betaBal;
-    if (["BUY", "CASH_DROP", "WIRE_OUT"].includes(modal) && amount > usdBal) {
-      setModalError(`Insufficient USD. Available: ${fmtUSD(usdBal)}`); return;
+    if (["BUY", "WIRE_OUT"].includes(modal) && amount > usdBal) {
+      setModalError(`Insufficient USD proceeds. Available: ${fmtUSD(usdBal)}`); return;
     }
     if (["SELL", "XFER"].includes(modal) && amount > data.user.tradingBal) {
       setModalError(`Insufficient CHIT. Available: ${fmtCHIT(data.user.tradingBal)}`); return;
@@ -201,14 +201,10 @@ export default function App() {
         d.treasury.chits -= amount;
         txn.from = modalFacility; txn.to = "Trading Vault"; txn.status = "Pending";
         break;
-      case "CASH_DROP":
-        deductUSD(amount);
-        txn.from = "Funding Accounts"; txn.to = modalFacility; txn.status = "Pending";
-        txn.asset = fmtUSD(amount);
-        break;
       case "WIRE_OUT":
+        // Deduct from funding account (where SELL proceeds land) → send to approved bank
         deductUSD(amount);
-        txn.from = "Funding Accounts"; txn.to = `Bank (${modalBank})`;
+        txn.from = "Funding Account (Proceeds)"; txn.to = `Approved Bank (${modalBank})`;
         txn.asset = fmtUSD(amount);
         break;
     }
@@ -217,7 +213,11 @@ export default function App() {
     persist(d);
 
     addLog("success", `[ORACLE] ${txn.receiptId} — ${modal} ${txn.asset} — ${txn.status}`);
-    addToast("success", "Transaction Complete", `${modal} ${txn.asset} — ${txn.status}`, txn.receiptId);
+    const toastTitle = modal === "WIRE_OUT" ? "Proceeds Sent to Bank" : "Transaction Complete";
+    const toastMsg = modal === "WIRE_OUT"
+      ? `${txn.asset} wired to ${modalBank}`
+      : `${modal} ${txn.asset} — ${txn.status}`;
+    addToast("success", toastTitle, toastMsg, txn.receiptId);
   };
 
   // ── Simulate incoming ─────────────────────────────

@@ -1,8 +1,8 @@
 // TopNav.jsx — sticky top navigation bar
 import { useState, useEffect } from "react";
 import {
-    MapPin, Menu, Search, X, ChevronDown,
-    ArrowDownLeft, ArrowUpRight, DollarSign, Zap, Terminal,
+    MapPin, Menu, Search, X,
+    ArrowDownLeft, DollarSign, Zap, Terminal,
 } from "lucide-react";
 import { fmtTime } from "../helpers.js";
 
@@ -120,8 +120,7 @@ export default function TopNav({ data, activeView, menuOpen, setMenuOpen, onOpen
                             <div style={{ padding: 6 }}>
                                 {[
                                     { label: "Schedule Cash Pick Up (CIT)", icon: ArrowDownLeft, color: "var(--green)", modal: "CASH_PICKUP" },
-                                    { label: "Schedule Cash Drop-Off (CIT)", icon: ArrowUpRight, color: "var(--red)", modal: "CASH_DROP" },
-                                    { label: "Wire Money Out (Fiat)", icon: DollarSign, color: "var(--blue)", modal: "WIRE_OUT" },
+                                    { label: "Send Proceeds to Approved Bank Account", icon: DollarSign, color: "var(--blue)", modal: "WIRE_OUT" },
                                 ].map(({ label, icon: Icon, color, modal }) => (
                                     <button
                                         key={modal}
